@@ -10,7 +10,10 @@ public class KafkaTopicConfig {
     @Bean
     public NewTopic orderTopic() {
         return TopicBuilder
-                .name("order-event").partitions(3).replicas(1).build();
+                .name("order-event")
+                .partitions(3)
+                .replicas(1)
+                .build();
     }
 
     @Bean

@@ -40,6 +40,28 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderResponse placeOrder(OrderRequest request) {
+        /*
+         * ---------------------------------------------------------
+         * 1. Get logged-in user
+         * ---------------------------------------------------------
+         *
+         * X-User-Id is added by API Gateway after JWT validation.
+         *
+         * The Order Service should NOT trust a userId supplied
+         * directly by the client.
+         */
+
+        // We will get this from the authenticated request.
+        Long userId = request.getUserId();//getCurrentUserId();
+
+        user = userFeignClient.getUserById(userId);
+
+        /*
+         * ---------------------------------------------------------
+         * 2. Check inventory
+         * ---------------------------------------------------------
+         */
+        //This will first check the inventory service whether product is available in inventory
         // First check inventory availability. Actual reservation is performed
         // asynchronously by Inventory Service when it consumes order-event.
         InventoryResponse inventory = inventoryFeignClient.isInStock(request.getSkuCode());
@@ -47,12 +69,26 @@ public class OrderServiceImpl implements OrderService {
             throw new IllegalStateException("product is out of stock");
         }
 
+        /*
+         * ---------------------------------------------------------
+         * 3. Create order
+         * ---------------------------------------------------------
+         */
         Order order = orderMapper.toEntity(request);
         String orderId = UUID.randomUUID().toString();
         order.setOrderNumber(orderId);
         order.setOrderStatus(CREATED);
         orderRepo.save(order);
 
+        /*
+         * ---------------------------------------------------------
+         * 4. Publish OrderPlacedEvent
+         * ---------------------------------------------------------
+         *
+         * Inventory Service consumes this event.
+         */
+
+        //Kafka Trigger
         OrderPlacedEvent event = new OrderPlacedEvent();
         event.setEventId(Uuid.randomUuid().toString());
         event.setOrderId(orderId);
@@ -60,6 +96,15 @@ public class OrderServiceImpl implements OrderService {
         event.setQuantity(request.getQuantity());
         event.setEventTime(LocalDateTime.now());
         orderEventProducer.sendOrderEvent(event);
+        /*
+         * ---------------------------------------------------------
+         * 5. Publish Notification Event
+         * ---------------------------------------------------------
+         *
+         * Notification Service consumes this event.
+         */
+
+        sendSmsAndEmailNotification(orderId, user);
 
         /*
          * ---------------------------------------------------------
@@ -116,5 +161,37 @@ public class OrderServiceImpl implements OrderService {
         return orderRepo.findByOrderNumber(orderId)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Order not found: " + orderId));
+    }
+
+    private void sendSmsAndEmailNotification(String orderId, UserResponse user) {
+        NotificationEvent emailEvent =
+                NotificationEvent.builder()
+                        .eventId(UUID.randomUUID().toString())
+                        .orderId(orderId)
+                        .email(user.getEmail())
+                        .subject("Order Placed Successfully")
+                        .message(
+                                "Your order " + orderId +
+                                        " has been placed successfully."
+                        )
+                        .type("EMAIL")
+                        .build();
+
+        notificationEventProducer.sendNotification(emailEvent);
+
+
+        NotificationEvent smsEvent =
+                NotificationEvent.builder()
+                        .eventId(UUID.randomUUID().toString())
+                        .orderId(orderId)
+                        .mobile(user.getPhone())
+                        .message(
+                                "Your order " + orderId +
+                                        " has been placed successfully."
+                        )
+                        .type("SMS")
+                        .build();
+
+        notificationEventProducer.sendNotification(smsEvent);
     }
 }
