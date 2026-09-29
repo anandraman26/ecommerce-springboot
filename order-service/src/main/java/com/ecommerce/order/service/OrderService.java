@@ -5,4 +5,8 @@ import com.ecommerce.order.dto.OrderResponse;
 
 public interface OrderService {
     OrderResponse placeOrder(OrderRequest request);
+
+    void confirmOrder(String orderId);
+
+    void failOrder(String orderId);
 }
