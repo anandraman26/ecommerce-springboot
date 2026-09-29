@@ -54,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
         // We will get this from the authenticated request.
         Long userId = request.getUserId();//getCurrentUserId();
 
-        user = userFeignClient.getUserById(userId);
+        UserResponse user = userFeignClient.getUserById(userId);
 
         /*
          * ---------------------------------------------------------
@@ -96,15 +96,6 @@ public class OrderServiceImpl implements OrderService {
         event.setQuantity(request.getQuantity());
         event.setEventTime(LocalDateTime.now());
         orderEventProducer.sendOrderEvent(event);
-        /*
-         * ---------------------------------------------------------
-         * 5. Publish Notification Event
-         * ---------------------------------------------------------
-         *
-         * Notification Service consumes this event.
-         */
-
-        sendSmsAndEmailNotification(orderId, user);
 
         /*
          * ---------------------------------------------------------
