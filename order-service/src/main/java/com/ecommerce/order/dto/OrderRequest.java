@@ -17,4 +17,7 @@ public class OrderRequest {
     private Integer quantity;
     @NotNull(message = "price is mandatory")
     private BigDecimal price;
+    @NotNull(message = "userId is mandatory")
+    private Long userId;
+
 }
