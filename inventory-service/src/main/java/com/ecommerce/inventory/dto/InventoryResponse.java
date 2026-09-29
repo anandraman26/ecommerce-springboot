@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InventoryResponse {
-		private String skuCode;
-		private boolean inStock;
-		private Integer availableQuantity;
+    private String skuCode;
+    private boolean inStock;
+    private Integer availableQuantity;
 }

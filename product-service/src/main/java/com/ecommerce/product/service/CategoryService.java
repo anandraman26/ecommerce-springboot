@@ -1,8 +1,8 @@
 package com.ecommerce.product.service;
 
-import java.util.List;
-
 import com.ecommerce.product.dto.CategoryDto;
+
+import java.util.List;
 
 public interface CategoryService {
 		CategoryDto createCategory(CategoryDto dto);

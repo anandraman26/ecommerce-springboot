@@ -1,14 +1,13 @@
 package com.ecommerce.payment.DTO;
 
-import java.math.BigDecimal;
-
 import com.ecommerce.payment.enums.PaymentStatus;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 
 @Getter
 @Setter

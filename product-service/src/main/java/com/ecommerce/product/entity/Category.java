@@ -1,9 +1,5 @@
 package com.ecommerce.product.entity;
 
-import java.util.List;
-
-import org.hibernate.annotations.GeneratorType;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,6 +12,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+
 @Entity
 @Table(name = "categories")
 @Data

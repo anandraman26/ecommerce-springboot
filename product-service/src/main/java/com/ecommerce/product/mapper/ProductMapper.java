@@ -1,10 +1,10 @@
 package com.ecommerce.product.mapper;
 
-import org.springframework.stereotype.Component;
-
 import com.ecommerce.product.dto.ProductDto;
 import com.ecommerce.product.entity.Category;
 import com.ecommerce.product.entity.Product;
+import org.springframework.stereotype.Component;
+
 @Component
 public class ProductMapper {
 		public ProductDto toDto(Product product) {

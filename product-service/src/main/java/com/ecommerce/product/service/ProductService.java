@@ -1,12 +1,10 @@
 package com.ecommerce.product.service;
 
-import java.io.IOError;
-import java.io.IOException;
-
+import com.ecommerce.product.dto.ProductDto;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ecommerce.product.dto.ProductDto;
+import java.io.IOException;
 
 public interface ProductService {
 		ProductDto createProduct(ProductDto dto);

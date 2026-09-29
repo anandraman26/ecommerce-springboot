@@ -1,7 +1,5 @@
 package com.ecommerce.inventory.entity;
 
-import org.hibernate.annotations.Collate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,11 +16,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Inventory {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-		private Long id;
-	@Column(unique = true, nullable = false)
-		private String skuCode;
-	@Column(nullable = false)
-		private Integer quantity;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(unique = true, nullable = false)
+    private String skuCode;
+    @Column(nullable = false)
+    private Integer quantity;
 }

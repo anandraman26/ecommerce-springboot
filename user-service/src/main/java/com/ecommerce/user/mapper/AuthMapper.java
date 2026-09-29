@@ -1,9 +1,8 @@
 package com.ecommerce.user.mapper;
 
-import org.springframework.stereotype.Component;
-
 import com.ecommerce.user.dto.LoginResponseDto;
 import com.ecommerce.user.entity.User;
+import org.springframework.stereotype.Component;
 
 @Component
 public class AuthMapper {

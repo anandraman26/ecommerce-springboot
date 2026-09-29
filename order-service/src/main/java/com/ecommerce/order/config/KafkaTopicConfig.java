@@ -7,9 +7,9 @@ import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
 public class KafkaTopicConfig {
-		@Bean
-	public NewTopic orderTopic() {
-		return TopicBuilder
-				.name("order-event").partitions(3).replicas(1).build();
-	}
+    @Bean
+    public NewTopic orderTopic() {
+        return TopicBuilder
+                .name("order-event").partitions(3).replicas(1).build();
+    }
 }
