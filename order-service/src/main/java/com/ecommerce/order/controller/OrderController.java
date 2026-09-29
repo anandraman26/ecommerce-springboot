@@ -21,6 +21,6 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderResponse> placeOrder(@RequestBody @Valid OrderRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.PlaceOrder(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.placeOrder(request));
     }
 }
