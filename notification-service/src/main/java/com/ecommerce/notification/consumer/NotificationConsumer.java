@@ -1,13 +1,11 @@
 package com.ecommerce.notification.consumer;
 
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Component;
-
 import com.ecommerce.notification.dto.NotificationEvent;
 import com.ecommerce.notification.service.EmailService;
 import com.ecommerce.notification.service.SmsService;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor

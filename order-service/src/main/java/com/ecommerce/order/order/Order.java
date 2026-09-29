@@ -1,7 +1,5 @@
 package com.ecommerce.order.order;
 
-import java.math.BigDecimal;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,18 +9,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "orders")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-		private Long id;
-		private String orderNumber;
-		private String skuCode;
-		private Integer quantity;
-		private BigDecimal price;
-		private String orderStatus;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String orderNumber;
+    private String skuCode;
+    private Integer quantity;
+    private BigDecimal price;
+    private String orderStatus;
 }

@@ -1,15 +1,13 @@
 package com.ecommerce.product.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.ecommerce.product.dto.CategoryDto;
 import com.ecommerce.product.entity.Category;
 import com.ecommerce.product.mapper.CategoryMapper;
 import com.ecommerce.product.repository.CategoryRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor

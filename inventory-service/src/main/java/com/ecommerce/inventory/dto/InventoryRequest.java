@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InventoryRequest {
-	@NotBlank(message = "SKU code must not be blank")
-		private String skuCode;
-	@Min(value = 0, message = "Quantity must be 0 or greater")
-		private Integer quantity;
+    @NotBlank(message = "SKU code must not be blank")
+    private String skuCode;
+    @Min(value = 0, message = "Quantity must be 0 or greater")
+    private Integer quantity;
 }
