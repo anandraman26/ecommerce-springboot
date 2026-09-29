@@ -11,10 +11,10 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class SmsService {
-		@Value("${twilio.from-number}")
-		private String fromNumber;
-		
-		public void sendSms(String to, String message) {
-			Message.creator(new PhoneNumber(to), new PhoneNumber(fromNumber), message).create();
-		}
+    @Value("${twilio.from-number}")
+    private String fromNumber;
+
+    public void sendSms(String to, String message) {
+        Message.creator(new PhoneNumber(to), new PhoneNumber(fromNumber), message).create();
+    }
 }
