@@ -5,27 +5,26 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderPlacedEvent {
+public class NotificationEvent {
 
     private String eventId;
 
     private String orderId;
 
-    private Long userId;
-
     private String email;
 
     private String mobile;
 
-    private String skuCode;
+    private String subject;
 
-    private Integer quantity;
+    private String message;
 
-    private LocalDateTime eventTime;
+    /**
+     * EMAIL or SMS
+     */
+    private String type;
 }
