@@ -54,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
         // We will get this from the authenticated request.
         Long userId = request.getUserId();//getCurrentUserId();
 
-        UserResponse user = userFeignClient.getUserById(userId);
+        user = userFeignClient.getUserById(userId);
 
         /*
          * ---------------------------------------------------------
