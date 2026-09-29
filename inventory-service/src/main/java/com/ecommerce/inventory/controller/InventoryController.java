@@ -29,4 +29,18 @@ public class InventoryController {
         inventoryService.addInventory(request);
         return ResponseEntity.status(HttpStatus.CREATED).body("Inventory added successfully");
     }
+
+    /** Called by Payment Service after successful payment. */
+    @PostMapping("/{orderId}/commit")
+    public ResponseEntity<Void> commitInventory(@PathVariable String orderId) {
+        inventoryService.commitInventory(orderId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /** Called by Payment Service after failed payment. */
+    @PostMapping("/{orderId}/rollback")
+    public ResponseEntity<Void> rollbackInventory(@PathVariable String orderId) {
+        inventoryService.rollbackInventory(orderId);
+        return ResponseEntity.noContent().build();
+    }
 }

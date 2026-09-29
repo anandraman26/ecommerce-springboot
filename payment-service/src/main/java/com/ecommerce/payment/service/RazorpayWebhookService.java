@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,19 +20,22 @@ public class RazorpayWebhookService {
     private final PaymentRepository paymentRepo;
     private final OrderClient orderClient;
     private final InventoryClient inventoryClient;
+
     @Value("${razorpay.webhook-secret}")
     private String webhookSecret;
 
+    @Transactional
     public void processWebhook(String signature, String payload) {
         verifySignature(signature, payload);
+
         JSONObject event = new JSONObject(payload);
         String eventType = event.getString("event");
-        log.info("Received RazorpayWebhook event ", eventType);
+        log.info("Received Razorpay webhook event: {}", eventType);
 
         switch (eventType) {
             case "payment.captured" -> handlePaymentSuccess(event);
             case "payment.failed" -> handlePaymentFailure(event);
-            default -> log.warn("unhandled razorpay event ", eventType);
+            default -> log.warn("Unhandled Razorpay event: {}", eventType);
         }
     }
 
@@ -39,9 +43,17 @@ public class RazorpayWebhookService {
         JSONObject paymentEntity = extractPaymentEntity(event);
         String razorpayOrderId = paymentEntity.getString("order_id");
         String razorpayPaymentId = paymentEntity.getString("id");
-        Payment payment = paymentRepo.findByTransactionId(razorpayOrderId).orElseThrow(() -> new IllegalStateException("Payment not found for Razorpay orderId"));
+
+        Payment payment = paymentRepo.findByTransactionId(razorpayOrderId)
+                .orElseThrow(() -> new IllegalStateException(
+                        "Payment not found for Razorpay orderId: " + razorpayOrderId));
+
+        // Razorpay can retry the same webhook. Replaying this is safe because
+        // the downstream confirm/commit operations are idempotent.
         payment.setPaymentStatus(PaymentStatus.SUCCESS);
         payment.setGatewayPaymentId(razorpayPaymentId);
+        paymentRepo.save(payment);
+
         orderClient.confirmOrder(payment.getOrderId());
         inventoryClient.commitInventory(payment.getOrderId());
     }
@@ -49,8 +61,15 @@ public class RazorpayWebhookService {
     private void handlePaymentFailure(JSONObject event) {
         JSONObject paymentEntity = extractPaymentEntity(event);
         String razorpayOrderId = paymentEntity.getString("order_id");
-        Payment payment = paymentRepo.findByTransactionId(razorpayOrderId).orElseThrow(() -> new IllegalStateException("Payment not found for this razorpay order id"));
+
+        Payment payment = paymentRepo.findByTransactionId(razorpayOrderId)
+                .orElseThrow(() -> new IllegalStateException(
+                        "Payment not found for this Razorpay order id: " + razorpayOrderId));
+
         payment.setPaymentStatus(PaymentStatus.FAILD);
+        paymentRepo.save(payment);
+
+        // Rollback first so stock is released before the order is marked failed.
         inventoryClient.rollbackInventory(payment.getOrderId());
         orderClient.failOrder(payment.getOrderId());
     }
@@ -65,11 +84,8 @@ public class RazorpayWebhookService {
         try {
             Utils.verifyWebhookSignature(payload, signature, webhookSecret);
         } catch (Exception e) {
-            // TODO: handle exception
-            log.error("invalid razorpay webhook signature");
-            throw new SecurityException("Invalid razorpay webhook signature");
+            log.error("Invalid Razorpay webhook signature", e);
+            throw new SecurityException("Invalid Razorpay webhook signature");
         }
     }
-
-
 }
