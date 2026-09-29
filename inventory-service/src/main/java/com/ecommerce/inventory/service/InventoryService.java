@@ -49,6 +49,9 @@ public class InventoryService {
      */
     @Transactional
     public void updateStock(OrderPlacedEvent event) {
+        //Here we need to check this order is already placed or not
+        // this is called idempotence case means order already placed so no duplicate order will create
+        //for that we need to create processed Order table which will maintain this
         if (processedOrderRepo.existsByOrderId(event.getOrderId())) {
             return;
         }

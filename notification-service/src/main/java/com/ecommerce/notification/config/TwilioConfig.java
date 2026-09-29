@@ -9,13 +9,14 @@ import jakarta.annotation.PostConstruct;
 
 @Configuration
 public class TwilioConfig {
-		@Value("${twilio.account-sid}")
-		private String accountSid;
-		
-		@Value("${twilio.auth-token}")
-		private String authToken;
-		@PostConstruct
-		public void init() {
-			Twilio.init(authToken, accountSid);
-		}
+    @Value("${twilio.account-sid}")
+    private String accountSid;
+
+    @Value("${twilio.auth-token}")
+    private String authToken;
+
+    @PostConstruct
+    public void init() {
+        Twilio.init(authToken, accountSid);
+    }
 }
