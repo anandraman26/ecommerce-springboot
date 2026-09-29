@@ -12,4 +12,13 @@ public class KafkaTopicConfig {
         return TopicBuilder
                 .name("order-event").partitions(3).replicas(1).build();
     }
+
+    @Bean
+    public NewTopic notificationTopic() {
+        return TopicBuilder
+                .name("notification-topic")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
 }

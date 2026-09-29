@@ -13,6 +13,7 @@ import com.ecommerce.order.kafka.OrderEventProducer;
 import com.ecommerce.order.mapper.OrderMapper;
 import com.ecommerce.order.order.Order;
 import com.ecommerce.order.repository.OrderRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.Uuid;
 import org.springframework.stereotype.Service;
@@ -32,8 +33,9 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final OrderEventProducer orderEventProducer;
     private final InventoryFeignClient inventoryFeignClient;
-    private final NotificationEventProducer notificationEventProducer;
     private final UserFeignClient userFeignClient;
+    private final NotificationEventProducer notificationEventProducer;
+    private final HttpServletRequest httpServletRequest;
 
     @Override
     @Transactional
@@ -94,6 +96,16 @@ public class OrderServiceImpl implements OrderService {
         event.setQuantity(request.getQuantity());
         event.setEventTime(LocalDateTime.now());
         orderEventProducer.sendOrderEvent(event);
+        /*
+         * ---------------------------------------------------------
+         * 5. Publish Notification Event
+         * ---------------------------------------------------------
+         *
+         * Notification Service consumes this event.
+         */
+
+        sendSmsAndEmailNotification(orderId, user);
+
         /*
          * ---------------------------------------------------------
          * 5. Publish Notification Event
